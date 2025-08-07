@@ -416,3 +416,33 @@ button:focus, input:focus, div[role="option"]:focus {
   font-size: 1.3rem;
   color: #eee;
 }
+/* Navbar Logo Styling */
+#nav-logo {
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 20px;
+}
+#nav-logo {
+  height: 48px;
+  display: block;
+}
+
+#nav-logo {
+  border: 1px solid red;
+}
+/* Logo inside sidebar */
+.logo {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}

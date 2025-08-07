@@ -6,30 +6,19 @@
   <title>Portfolio Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    /* You can move this to your styles.css if you want */
-    /* Enlarged Pie Chart Canvas */
-    #pieChart {
-      width: 400px !important;
-      height: 400px !important;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
 </head>
 <body>
   <h1>US Equity Portfolio Dashboard</h1>
   <div class="dashboard">
     <aside id="sidebar" aria-label="Dashboard sidebar navigation">
+      <img src="logo.png" alt="Logo" class="logo" />
       <div class="tabs">
-
         <!-- Major Holdings -->
         <div class="tab" id="tab-major">
           <button class="tab-button active" aria-expanded="true">Major Holdings ▼</button>
           <div class="tab-content expanded" id="majorContent" aria-hidden="false">
             <div id="majorHoldingsSummary">
               <div class="total-investment">Total Investment: $0.00</div>
-              <!-- <div id="majorProfitLoss" class="profit-loss">P/L: Loading...</div> -->
             </div>
             <ul id="majorStocks" class="dropdown-list" aria-label="Major stock holdings"></ul>
           </div>
@@ -62,43 +51,39 @@
             <p><em>Portfolio editing soon.</em></p>
           </div>
         </div>
-
       </div>
     </aside>
 
     <main class="main-panel" aria-label="Main dashboard panel">
       <section>
         <h2>Portfolio Value</h2>
-
-        <!-- Profit/Loss Info Bar above chart -->
-        <div id="profitLossInfo" role="region" aria-live="polite" aria-atomic="true" aria-label="Profit and loss summary">
+        <div id="profitLossInfo">
           <div><strong>Total Investment:</strong> <span id="plTotalInvestment">Loading...</span></div>
           <div><strong>Current Value:</strong> <span id="plCurrentValue">Loading...</span></div>
           <div><strong>Profit/Loss:</strong> <span id="plProfitLoss">Loading...</span></div>
           <div><strong>Profit/Loss %:</strong> <span id="plProfitLossPercent">Loading...</span></div>
         </div>
 
-        <div id="ranges" role="group" aria-label="Select portfolio value date range">
+        <div id="ranges">
           <button data-range="week">1W</button>
           <button data-range="month">1M</button>
           <button data-range="year" class="active">1Y</button>
         </div>
-        <canvas id="mainChart" width="820" height="300" aria-label="Portfolio value chart"></canvas>
-        <div id="message" role="alert" aria-live="assertive"></div>
+        <canvas id="mainChart" width="820" height="300"></canvas>
+        <div id="message"></div>
       </section>
 
       <section class="pie-drill-section">
-        <div class="pie-container" role="region" aria-label="Sector allocation pie chart">
+        <div class="pie-container">
           <h2>Sector Allocation</h2>
-          <canvas id="pieChart" width="400" height="400" aria-label="Sector allocation chart"></canvas>
+          <canvas id="pieChart" width="400" height="400"></canvas>
           <div id="pieLegend"></div>
         </div>
-        <div class="drilldown-container" role="region" aria-label="Sector stocks details" tabindex="0">
+        <div class="drilldown-container">
           <div id="sectorDetails"></div>
         </div>
       </section>
     </main>
-
   </div>
 
   <script src="dashboard.js"></script>
