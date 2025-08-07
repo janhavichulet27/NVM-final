@@ -1,0 +1,33 @@
+ticker,shares,price,action,tx_date,notes
+AAPL,20,28.1,BUY,2015-05-01,Initial purchase
+AAPL,10,40.15,BUY,2017-09-22,Added after strong results
+AAPL,-10,70.05,SELL,2021-01-10,Partial profit book
+MSFT,15,45.85,BUY,2016-03-14,Start of position
+MSFT,10,103.02,BUY,2018-12-05,Doubled down
+MSFT,-5,289.67,SELL,2022-08-02,Partial sell - new high
+JPM,30,61.20,BUY,2015-10-05,Initial bank play
+JPM,15,91.05,BUY,2019-05-15,Added financials
+JPM,-15,158.22,SELL,2021-12-01,Taken profits
+NVDA,5,23.75,BUY,2016-01-20,Early growth
+NVDA,10,50.23,BUY,2018-06-04,NVIDIA AI focus
+NVDA,3,200.09,BUY,2021-07-30,Uptrend
+NVDA,-3,745.85,SELL,2025-03-01,Partial profit top
+TSLA,2,37.67,BUY,2016-08-08,Speculative buy
+TSLA,2,167.10,BUY,2020-01-30,Added on Model 3 demand
+TSLA,-2,853.61,SELL,2023-04-10,Profit
+META,8,94.90,BUY,2017-06-14,Facebook (now Meta) initial
+META,7,242.55,BUY,2020-11-15,More on social rebound
+META,-5,326.54,SELL,2024-07-01,AI move - partial cashout
+GOOGL,5,524.05,BUY,2015-11-12,Alphabet entry
+GOOGL,2,1190.43,BUY,2018-12-19,More Google investment
+GOOGL,-2,2648.62,SELL,2022-03-10,Partial profit
+DIS,12,102.23,BUY,2018-08-01,Disney streaming bet
+DIS,8,175.18,BUY,2020-03-25,Added post-pandemic crash
+DIS,-10,184.85,SELL,2024-12-15,Profit/book
+SPGI,3,105.27,BUY,2015-10-10,Added for diversity
+SPGI,2,385.15,BUY,2022-06-06,Market data play
+APD,5,140.80,BUY,2017-01-15,Materials sector
+APD,-2,285.51,SELL,2022-09-10,Partial profit chemical
+TJX,10,40.05,BUY,2017-07-18,Defensive retail
+TJX,5,56.83,BUY,2020-04-07,Discount stores
+TJX,-8,89.92,SELL,2025-01-03,Trimmed retail

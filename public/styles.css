@@ -1,0 +1,418 @@
+/* styles.css – shared for portfolio.html and watchlist.html */
+
+/* Base Reset & font */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: #121212;
+  color: #eee;
+  line-height: 1.4;
+}
+
+/* Headers */
+h1, h2, h4 {
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #eee;
+}
+
+h1 {
+  font-size: 28px;
+  margin: 20px 30px 10px 30px;
+}
+
+h2 {
+  font-size: 22px;
+}
+
+h4 {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+/* Links */
+a {
+  color: #0a74da;
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: #095cb2;
+  text-decoration: underline;
+  outline: none;
+}
+
+/* Buttons */
+button, .btn {
+  background-color: #0a74da;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 14px;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+button:hover, button:focus, .btn:hover, .btn:focus {
+  background-color: #095cb2;
+  outline: none;
+}
+
+/* Inputs */
+input[type="text"], input[type="search"] {
+  padding: 10px 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a2a2a;
+  color: #eee;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="text"]::placeholder, input[type="search"]::placeholder {
+  color: #999;
+}
+
+/* Layout containers */
+.dashboard {
+  display: flex;
+  height: calc(100vh - 64px);
+  margin: 0 30px 20px 30px;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 280px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+  overflow-y: auto;
+}
+
+/* Tabs inside sidebar */
+.tabs .tab {
+  margin-bottom: 10px;
+}
+
+.tabs .tab-button {
+  width: 100%;
+  background: #2b2b2b;
+  color: #bbb;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: background-color 0.25s ease;
+}
+
+.tabs .tab-button:hover,
+.tabs .tab-button.active {
+  background: #0a74da;
+  color: white;
+  outline: none;
+}
+
+/* Content inside tabs */
+.tab-content {
+  display: none;
+  background: #252525;
+  padding: 12px 15px;
+  margin-top: 5px;
+  border-radius: 6px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.tab-content.expanded {
+  display: block;
+}
+
+/* Dropdown lists in sidebar */
+.dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: #ddd;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.dropdown-list li {
+  padding: 8px 10px;
+  border-bottom: 1px solid #333;
+  cursor: default;
+}
+
+.dropdown-list li:hover,
+.dropdown-list li:focus {
+  background-color: #0a74da;
+  color: white;
+  outline: none;
+}
+
+/* Main panel */
+.main-panel {
+  flex: 1;
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Headings in main */
+.main-panel section {
+  margin-bottom: 30px;
+}
+
+/* Buttons for ranges */
+#ranges {
+  margin-bottom: 12px;
+}
+
+#ranges button {
+  background: #2b2b2b;
+  border-radius: 6px;
+  border: none;
+  color: #bbb;
+  padding: 6px 12px;
+  margin-right: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+#ranges button.active, #ranges button:hover, #ranges button:focus {
+  background: #0a74da;
+  color: white;
+  outline: none;
+}
+
+/* Tables everywhere */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #212121;
+}
+
+thead {
+  background-color: #1a1a1a;
+}
+
+thead th {
+  color: #bbb;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 14px 16px;
+  border-bottom: 1px solid #333;
+  user-select: none;
+}
+
+tbody tr {
+  border-bottom: 1px solid #222;
+  cursor: default;
+  transition: background-color 0.25s ease;
+}
+
+tbody tr:hover {
+  background-color: #0a74da;
+  color: white;
+}
+
+tbody td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #ddd;
+}
+
+/* Buttons in table cells (remove buttons) */
+button.remove-btn {
+  background: transparent;
+  border: none;
+  color: #f44336;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+button.remove-btn:hover, button.remove-btn:focus {
+  color: #ff7961;
+  outline: none;
+}
+
+/* Price changes color coding */
+.price-up {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.price-down {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.price-neutral {
+  color: #ccc;
+}
+
+/* Modal styles - shared appearance */
+#modalBg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#modalContent {
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 24px 30px;
+  width: 450px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+}
+
+/* No data message */
+.no-data {
+  color: #666;
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* Scrollbar for sidebar and modal */
+#sidebar, #modalContent, .tab-content {
+  scrollbar-width: thin;
+  scrollbar-color: #0a74da #1e1e1e;
+}
+
+/* Webkit scrollbar for better UX */
+#sidebar::-webkit-scrollbar,
+.tab-content::-webkit-scrollbar,
+#modalContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sidebar::-webkit-scrollbar-track,
+.tab-content::-webkit-scrollbar-track,
+#modalContent::-webkit-scrollbar-track {
+  background: #1e1e1e;
+  border-radius: 10px;
+}
+
+#sidebar::-webkit-scrollbar-thumb,
+.tab-content::-webkit-scrollbar-thumb,
+#modalContent::-webkit-scrollbar-thumb {
+  background-color: #0a74da;
+  border-radius: 10px;
+  border: 2px solid #1e1e1e;
+}
+
+/* Consistent focus style */
+button:focus, input:focus, div[role="option"]:focus {
+  outline: 2px solid #0a74da;
+  outline-offset: 2px;
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 960px) {
+  .dashboard {
+    flex-direction: column;
+  }
+  #sidebar {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  .main-panel {
+    margin-left: 0;
+  }
+}
+
+#pieLegend {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  user-select: none;
+  color: #ddd;
+}
+
+.pie-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pie-label span.color-box {
+  display: inline-block;
+  width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+#profitLossInfo {
+  display: flex;
+  gap: 36px;
+  padding: 12px 20px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.3rem;
+  color: #ddd;
+  user-select: text;
+}
+
+#profitLossInfo > div {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+#profitLossInfo > div > strong {
+  font-weight: 800;
+  margin-bottom: 6px;
+  font-size: 1.1rem;
+  color: #bbb;
+}
+
+#profitLossInfo > div > span {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #eee;
+}

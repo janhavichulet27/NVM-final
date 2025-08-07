@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Transactions - Portfolio Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #272727;
+      user-select: none;
+    }
+    tr:hover {
+      background: #0a74da;
+      color: white;
+    }
+    .positive {
+      color: #4caf50;
+      font-weight: 600;
+    }
+    .negative {
+      color: #f44336;
+      font-weight: 600;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .pagination button {
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #0a74da;
+      color: #fff;
+      transition: background 0.2s ease-in-out;
+    }
+    .pagination button:disabled {
+      background: #555;
+      cursor: default;
+    }
+    .pagination button:hover:not(:disabled) {
+      background: #095cb2;
+    }
+    .info-text {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Portfolio Transactions</h1>
+
+  <div class="info-text" id="infoText"></div>
+
+  <table aria-label="Portfolio transactions table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Ticker</th>
+        <th>Shares</th>
+        <th>Price per Share (USD)</th>
+        <th>Total Value (USD)</th>
+      </tr>
+    </thead>
+    <tbody id="transactionsBody">
+      <!-- Populated by JS -->
+    </tbody>
+  </table>
+
+  <div class="pagination" aria-label="Pagination controls">
+    <button id="prevPageBtn" aria-label="Previous page">Previous</button>
+    <span id="pageInfo"></span>
+    <button id="nextPageBtn" aria-label="Next page">Next</button>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    const limit = 20;
+
+    const transactionsBody = document.getElementById('transactionsBody');
+    const infoText = document.getElementById('infoText');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const pageInfo = document.getElementById('pageInfo');
+
+    async function loadTransactions(page) {
+      try {
+        const resp = await fetch(`/api/transactions?page=${page}&limit=${limit}`);
+        if (!resp.ok) throw new Error('Failed to fetch transactions');
+        const data = await resp.json();
+
+        transactionsBody.innerHTML = '';
+        if (!Array.isArray(data.transactions) || data.transactions.length === 0) {
+          transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">No transactions found.</td></tr>';
+          infoText.textContent = '';
+          pageInfo.textContent = '';
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
+        }
+
+        data.transactions.forEach(tx => {
+          const sharesNum = parseFloat(tx.shares);
+          const priceNum = parseFloat(tx.price);
+          const totalValue = sharesNum * priceNum;
+
+          // Format date safely
+          let displayDate;
+          try {
+            displayDate = new Date(tx.tx_date).toLocaleDateString() || tx.tx_date;
+          } catch (_) {
+            displayDate = tx.tx_date;
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${displayDate}</td>
+            <td>${tx.ticker}</td>
+            <td class="${sharesNum > 0 ? 'positive' : 'negative'}">${sharesNum.toFixed(3)}</td>
+            <td>$${priceNum.toFixed(2)}</td>
+            <td>$${totalValue.toFixed(2)}</td>
+          `;
+          transactionsBody.appendChild(tr);
+        });
+
+        infoText.textContent = `Showing page ${data.page} of ${data.totalPages} (${data.totalCount} total transactions)`;
+        pageInfo.textContent = `Page ${data.page} of ${data.totalPages}`;
+        prevBtn.disabled = data.page <= 1;
+        nextBtn.disabled = data.page >= data.totalPages;
+
+      } catch (err) {
+        transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#f44336;">Error loading transactions.</td></tr>';
+        infoText.textContent = '';
+        pageInfo.textContent = '';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        console.error(err);
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        loadTransactions(currentPage);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentPage++;
+      loadTransactions(currentPage);
+    });
+
+    // Initial load
+    loadTransactions(currentPage);
+  </script>
+</body>
+</html>

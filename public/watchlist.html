@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Watchlist - Portfolio Dashboard</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; background: #121212; color: #eee;
+    }
+    header {
+      background: #1e1e1e;
+      padding: 15px 30px;
+      font-size: 24px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0; font-weight: 700;
+    }
+    #addStockBtn {
+      background: #0a74da;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 8px 16px;
+      transition: background 0.3s ease;
+    }
+    #addStockBtn:hover { background: #095cb2; }
+    main {
+      padding: 20px 30px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    thead {
+      background-color: #222;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+      font-size: 14px;
+    }
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #bbb;
+    }
+    tr:hover {
+      background-color: #1f1f1f;
+    }
+    .price-up {
+      color: #4caf50;
+      font-weight: 600;
+    }
+    .price-down {
+      color: #f44336;
+      font-weight: 600;
+    }
+    .price-neutral {
+      color: #ccc;
+    }
+    button.remove-btn {
+      background: transparent;
+      border: none;
+      color: #f44336;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 18px;
+      transition: color 0.2s ease;
+    }
+    button.remove-btn:hover {
+      color: #ff7961;
+    }
+    /* Modal styles for add stock */
+    #modalBg {
+      position: fixed;
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    #modalContent {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 20px 30px;
+      width: 450px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+    }
+    #searchInput {
+      padding: 10px 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      outline: none;
+      background: #2a2a2a;
+      color: #eee;
+    }
+    #searchResults {
+      max-height: 200px;
+      overflow-y: auto;
+      background: #2a2a2a;
+      border-radius: 6px;
+    }
+    #searchResults div {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #333;
+      color: #ddd;
+    }
+    #searchResults div:hover, #searchResults div.selected {
+      background: #0a74da;
+      color: white;
+    }
+    #modalActions {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    #modalActions button {
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    #addConfirmBtn {
+      background: #0a74da; color: white;
+    }
+    #addConfirmBtn:hover {
+      background: #095cb2;
+    }
+    #addCancelBtn {
+      background: #444; color: #ccc;
+    }
+    #addCancelBtn:hover {
+      background: #666;
+    }
+    .no-data {
+      text-align: center;
+      margin-top: 30px;
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+  
+</head>
+<body>
+  <header>
+    <h1>Watchlist</h1>
+    <button id="addStockBtn" title="Add Stock to Watchlist">+ Add Stock</button>
+  </header>
+
+  <main>
+    <table id="watchlistTable" aria-label="Watchlist stocks data">
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Current Price</th>
+          <th>Change (Week)</th>
+          <th>Change (Month)</th>
+          <th style="width: 80px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- populated dynamically -->
+      </tbody>
+    </table>
+    <div class="no-data" id="noDataMsg" style="display:none;">Your watchlist is empty.</div>
+  </main>
+
+  <!-- Modal Popup for Add Stock -->
+  <div id="modalBg" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="modalContent">
+      <input 
+        id="searchInput"
+        type="text" 
+        placeholder="Search ticker or company name..." 
+        autocomplete="off"
+        aria-label="Search Stocks" 
+      />
+      <div id="searchResults" role="listbox"></div>
+      <div id="modalActions">
+        <button id="addCancelBtn" type="button">Cancel</button>
+        <button id="addConfirmBtn" type="button" disabled>Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const watchlistTableBody = document.querySelector('#watchlistTable tbody');
+      const noDataMsg = document.getElementById('noDataMsg');
+      const addStockBtn = document.getElementById('addStockBtn');
+      const modalBg = document.getElementById('modalBg');
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+      const addConfirmBtn = document.getElementById('addConfirmBtn');
+      const addCancelBtn = document.getElementById('addCancelBtn');
+
+      let selectedTicker = null;
+      let currentWatchlist = [];
+
+      // Format percentage with +/- and color-class
+      function formatChange(percent) {
+        if (percent === null || percent === undefined) return '-';
+        const fixed = Number(percent).toFixed(2) + '%';
+        if (percent > 0) return `<span class="price-up">+${fixed} ▲</span>`;
+        if (percent < 0) return `<span class="price-down">${fixed} ▼</span>`;
+        return `<span class="price-neutral">0.00%</span>`;
+      }
+
+      // Fetch watchlist and render
+      async function loadWatchlist() {
+        try {
+          const res = await fetch('/api/watchlist');
+          if (!res.ok) throw new Error('Failed to load watchlist');
+          const data = await res.json();
+
+          currentWatchlist = data;
+
+          watchlistTableBody.innerHTML = '';
+
+          if (data.length === 0) {
+            noDataMsg.style.display = 'block';
+            document.getElementById('watchlistTable').style.display = 'none';
+            return;
+          } else {
+            noDataMsg.style.display = 'none';
+            document.getElementById('watchlistTable').style.display = 'table';
+          }
+
+          data.forEach(stock => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>${stock.ticker}</strong></td>
+              <td>$${(Number(stock.latestPrice) || 0).toFixed(2)}</td>
+              <td>${formatChange(stock.weekChangePercent)}</td>
+              <td>${formatChange(stock.monthChangePercent)}</td>
+              <td>
+                <button class="remove-btn" title="Remove from watchlist" aria-label="Remove ${stock.ticker}">&minus;</button>
+              </td>
+            `;
+
+            const removeBtn = tr.querySelector('.remove-btn');
+            removeBtn.addEventListener('click', () => {
+              removeTicker(stock.ticker);
+            });
+
+            watchlistTableBody.appendChild(tr);
+          });
+        } catch (err) {
+          console.error('Error loading watchlist:', err);
+        }
+      }
+
+      async function removeTicker(ticker) {
+        if (!confirm(`Remove ${ticker} from watchlist?`)) return;
+        try {
+          const res = await fetch(`/api/watchlist/${ticker}`, { method: 'DELETE' });
+          if (res.ok) {
+            loadWatchlist();
+          } else {
+            alert('Failed to remove stock from watchlist.');
+          }
+        } catch (err) {
+          alert('Error removing stock from watchlist.');
+          console.error(err);
+        }
+      }
+
+      // Modal open/close
+      function openModal() {
+        modalBg.style.display = 'flex';
+        selectedTicker = null;
+        addConfirmBtn.disabled = true;
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+        searchInput.focus();
+      }
+
+      function closeModal() {
+        modalBg.style.display = 'none';
+      }
+
+      addStockBtn.addEventListener('click', openModal);
+      addCancelBtn.addEventListener('click', closeModal);
+
+      // Search stocks from server on input (debounce)
+      let debounceTimer;
+      function debounce(func, delay) {
+        return (...args) => {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => func.apply(null, args), delay);
+        };
+      }
+
+      async function fetchSearchResults(query) {
+        if (!query.trim()) {
+          searchResults.innerHTML = '';
+          addConfirmBtn.disabled = true;
+          selectedTicker = null;
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/tickers/search?q=${encodeURIComponent(query)}`);
+          if (!res.ok) return;
+
+          const results = await res.json();
+
+          if (results.length === 0) {
+            searchResults.innerHTML = `<div style="color: #888; padding: 8px;">No matches found</div>`;
+            addConfirmBtn.disabled = true;
+            selectedTicker = null;
+            return;
+          }
+
+          // Filter out tickers already in watchlist
+          const filtered = results.filter(r => !currentWatchlist.some(ws => ws.ticker === r.ticker));
+
+          if (filtered.length === 0) {
+            searchResults.innerHTML = `<div style="color: #888; padding: 8px;">All matches are already in your watchlist</div>`;
+            addConfirmBtn.disabled = true;
+            selectedTicker = null;
+            return;
+          }
+
+          searchResults.innerHTML = '';
+          filtered.forEach(({ ticker, company_name }) => {
+            const div = document.createElement('div');
+            div.textContent = `${ticker} — ${company_name}`;
+            div.setAttribute('role', 'option');
+            div.tabIndex = 0;
+
+            div.addEventListener('click', () => {
+              selectTicker(ticker, div);
+            });
+            div.addEventListener('keydown', e => {
+              if (e.key === 'Enter') {
+                selectTicker(ticker, div);
+              }
+            });
+
+            searchResults.appendChild(div);
+          });
+        } catch (err) {
+          console.error('Search fetch error:', err);
+        }
+      }
+
+      const debouncedSearch = debounce(fetchSearchResults, 300);
+
+      searchInput.addEventListener('input', e => {
+        debouncedSearch(e.target.value);
+      });
+
+      // Select ticker from search
+      function selectTicker(ticker, divElem) {
+        // Remove previous selections
+        [...searchResults.children].forEach(c => c.classList.remove('selected'));
+        divElem.classList.add('selected');
+        selectedTicker = ticker;
+        addConfirmBtn.disabled = false;
+      }
+
+      addConfirmBtn.addEventListener('click', async () => {
+        if (!selectedTicker) return;
+
+        try {
+          // Add ticker to watchlist via API
+          const res = await fetch('/api/watchlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticker: selectedTicker })
+          });
+
+          if (res.ok) {
+            closeModal();
+            loadWatchlist();
+          } else {
+            const errorJson = await res.json();
+            alert('Failed to add stock: ' + (errorJson.error || 'Unknown error'));
+          }
+        } catch (err) {
+          alert('Error adding stock to watchlist.');
+          console.error(err);
+        }
+      });
+
+      // Initialize when DOM is fully loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        loadWatchlist();
+      });
+    })();
+  </script>
+</body>
+</html>
